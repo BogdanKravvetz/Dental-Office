@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6ab8e4774eec4dff91e15b29f1f4bfeb" Name="Diagram1" ZoomLevel="93">
+        <EntityTypeShape EntityType="CabinetModel.Interventie" Width="1.5" PointX="0.75" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CabinetModel.Pacient" Width="1.5" PointX="5.5" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="CabinetModel.Pret" Width="1.5" PointX="0.75" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="CabinetModel.Programare" Width="1.5" PointX="6.625" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CabinetModel.Utilizator" Width="1.5" PointX="2.5" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="CabinetModel.ProgramInter" Width="1.5" PointX="3.25" PointY="7.625" IsExpanded="true" />
+        <AssociationConnector Association="CabinetModel.FK_Pret_Interventie" ManuallyRouted="false" />
+        <AssociationConnector Association="CabinetModel.FK_ProgramInter_Interventie" ManuallyRouted="false" />
+        <AssociationConnector Association="CabinetModel.FK_Pacient_Utilizator" ManuallyRouted="false" />
+        <AssociationConnector Association="CabinetModel.FK_Programare_Pacient" ManuallyRouted="false" />
+        <AssociationConnector Association="CabinetModel.ProgramareProgramInter" />
+        <AssociationConnector Association="CabinetModel.ProgramInterProgramare" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,663 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CabinetModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Interventie">
+          <Key>
+            <PropertyRef Name="idInterventie" />
+          </Key>
+          <Property Name="idInterventie" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="tip" Type="varchar" MaxLength="50" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Pacient">
+          <Key>
+            <PropertyRef Name="idPacient" />
+          </Key>
+          <Property Name="idPacient" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idUtilizator" Type="int" Nullable="false" />
+          <Property Name="nume" Type="varchar" MaxLength="50" />
+          <Property Name="prenume" Type="varchar" MaxLength="50" />
+          <Property Name="cnp" Type="varchar" MaxLength="50" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Pret">
+          <Key>
+            <PropertyRef Name="idPret" />
+          </Key>
+          <Property Name="idPret" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idInterventie" Type="int" Nullable="false" />
+          <Property Name="dataInceput" Type="datetime" />
+          <Property Name="dataSfarsit" Type="datetime" />
+          <Property Name="pret" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Programare">
+          <Key>
+            <PropertyRef Name="idProgramare" />
+          </Key>
+          <Property Name="idProgramare" Type="int" Nullable="false" />
+          <Property Name="idPacient" Type="int" Nullable="false" />
+          <Property Name="dataProgramare" Type="datetime" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Cabinet.dbo.ProgramInter' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ProgramInter">
+          <Key>
+            <PropertyRef Name="idProgramare" />
+            <PropertyRef Name="idInterventie" />
+          </Key>
+          <Property Name="idProgramare" Type="int" Nullable="false" />
+          <Property Name="idInterventie" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Utilizator">
+          <Key>
+            <PropertyRef Name="idUtilizator" />
+          </Key>
+          <Property Name="idUtilizator" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nume" Type="varchar" MaxLength="50" />
+          <Property Name="parola" Type="varchar" MaxLength="50" />
+          <Property Name="isMedic" Type="bit" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Pacient_Utilizator">
+          <End Role="Utilizator" Type="Self.Utilizator" Multiplicity="1" />
+          <End Role="Pacient" Type="Self.Pacient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Utilizator">
+              <PropertyRef Name="idUtilizator" />
+            </Principal>
+            <Dependent Role="Pacient">
+              <PropertyRef Name="idUtilizator" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pret_Interventie">
+          <End Role="Interventie" Type="Self.Interventie" Multiplicity="1" />
+          <End Role="Pret" Type="Self.Pret" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Interventie">
+              <PropertyRef Name="idInterventie" />
+            </Principal>
+            <Dependent Role="Pret">
+              <PropertyRef Name="idInterventie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Programare_Pacient">
+          <End Role="Pacient" Type="Self.Pacient" Multiplicity="1" />
+          <End Role="Programare" Type="Self.Programare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pacient">
+              <PropertyRef Name="idPacient" />
+            </Principal>
+            <Dependent Role="Programare">
+              <PropertyRef Name="idPacient" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgramInter_Interventie">
+          <End Role="Interventie" Type="Self.Interventie" Multiplicity="1" />
+          <End Role="ProgramInter" Type="Self.ProgramInter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Interventie">
+              <PropertyRef Name="idInterventie" />
+            </Principal>
+            <Dependent Role="ProgramInter">
+              <PropertyRef Name="idInterventie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="DeleteInterventie" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idInterventie" Type="int" Mode="In" />
+          <Parameter Name="isDeleted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="DeletePacient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idPacient" Type="int" Mode="In" />
+          <Parameter Name="idDeleted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="DeletePret" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idPret" Type="int" Mode="In" />
+          <Parameter Name="isDeleted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="DeleteProgramare" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idProgramare" Type="int" Mode="In" />
+          <Parameter Name="idPacient" Type="int" Mode="In" />
+          <Parameter Name="isDeleted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="DeleteUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idUtilizator" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetAllInterventii" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetAllPacienti" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idUtilizator" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetAllPret" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetAllProgramari" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="GetAllUsers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="InsertInterventie" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="tip" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="InsertPacient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idUtilizator" Type="int" Mode="In" />
+          <Parameter Name="nume" Type="varchar" Mode="In" />
+          <Parameter Name="prenume" Type="varchar" Mode="In" />
+          <Parameter Name="cnp" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="InsertPret" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idInterventie" Type="int" Mode="In" />
+          <Parameter Name="dataInceput" Type="datetime" Mode="In" />
+          <Parameter Name="dataSfarsit" Type="datetime" Mode="In" />
+          <Parameter Name="pret" Type="float" Mode="In" />
+        </Function>
+        <Function Name="InsertProgramare" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idPacient" Type="int" Mode="In" />
+          <Parameter Name="dataProgramare" Type="datetime" Mode="In" />
+          <Parameter Name="isDeleted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="nume" Type="varchar" Mode="In" />
+          <Parameter Name="parola" Type="varchar" Mode="In" />
+          <Parameter Name="isMedic" Type="bit" Mode="In" />
+          <Parameter Name="isDeleted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="UpdateInterventie" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idInterventie" Type="int" Mode="In" />
+          <Parameter Name="tip" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="UpdatePacient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idPacient" Type="int" Mode="In" />
+          <Parameter Name="nume" Type="varchar" Mode="In" />
+          <Parameter Name="prenume" Type="varchar" Mode="In" />
+          <Parameter Name="cnp" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="UpdatePret" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idPret" Type="int" Mode="In" />
+          <Parameter Name="idInterventie" Type="int" Mode="In" />
+          <Parameter Name="dataInceput" Type="datetime" Mode="In" />
+          <Parameter Name="dataSfarsit" Type="datetime" Mode="In" />
+          <Parameter Name="pret" Type="float" Mode="In" />
+        </Function>
+        <Function Name="UpdateProgramare" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idProgramare" Type="int" Mode="In" />
+          <Parameter Name="idPacient" Type="int" Mode="In" />
+          <Parameter Name="dataProgramare" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="UpdateUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="idUtilizator" Type="int" Mode="In" />
+          <Parameter Name="nume" Type="varchar" Mode="In" />
+          <Parameter Name="parola" Type="varchar" Mode="In" />
+          <Parameter Name="isMedic" Type="bit" Mode="In" />
+        </Function>
+        <EntityContainer Name="CabinetModelStoreContainer">
+          <EntitySet Name="Interventie" EntityType="Self.Interventie" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pacient" EntityType="Self.Pacient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pret" EntityType="Self.Pret" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Programare" EntityType="Self.Programare" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Utilizator" EntityType="Self.Utilizator" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProgramInter" EntityType="Self.ProgramInter" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ProgramInter].[idProgramare] AS [idProgramare], 
+    [ProgramInter].[idInterventie] AS [idInterventie]
+    FROM [dbo].[ProgramInter] AS [ProgramInter]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Pacient_Utilizator" Association="Self.FK_Pacient_Utilizator">
+            <End Role="Utilizator" EntitySet="Utilizator" />
+            <End Role="Pacient" EntitySet="Pacient" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pret_Interventie" Association="Self.FK_Pret_Interventie">
+            <End Role="Interventie" EntitySet="Interventie" />
+            <End Role="Pret" EntitySet="Pret" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Programare_Pacient" Association="Self.FK_Programare_Pacient">
+            <End Role="Pacient" EntitySet="Pacient" />
+            <End Role="Programare" EntitySet="Programare" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgramInter_Interventie" Association="Self.FK_ProgramInter_Interventie">
+            <End Role="Interventie" EntitySet="Interventie" />
+            <End Role="ProgramInter" EntitySet="ProgramInter" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CabinetModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Interventie">
+          <Key>
+            <PropertyRef Name="idInterventie" />
+          </Key>
+          <Property Name="idInterventie" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tip" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Pret" Relationship="Self.FK_Pret_Interventie" FromRole="Interventie" ToRole="Pret" />
+          <NavigationProperty Name="ProgramInter" Relationship="Self.FK_ProgramInter_Interventie" FromRole="Interventie" ToRole="ProgramInter" />
+        </EntityType>
+        <EntityType Name="Pacient">
+          <Key>
+            <PropertyRef Name="idPacient" />
+          </Key>
+          <Property Name="idPacient" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idUtilizator" Type="Int32" Nullable="false" />
+          <Property Name="nume" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="prenume" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="cnp" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Utilizator" Relationship="Self.FK_Pacient_Utilizator" FromRole="Pacient" ToRole="Utilizator" />
+          <NavigationProperty Name="Programare" Relationship="Self.FK_Programare_Pacient" FromRole="Pacient" ToRole="Programare" />
+        </EntityType>
+        <EntityType Name="Pret">
+          <Key>
+            <PropertyRef Name="idPret" />
+          </Key>
+          <Property Name="idPret" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idInterventie" Type="Int32" Nullable="false" />
+          <Property Name="dataInceput" Type="DateTime" Precision="3" />
+          <Property Name="dataSfarsit" Type="DateTime" Precision="3" />
+          <Property Name="pret1" Type="Decimal" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Interventie" Relationship="Self.FK_Pret_Interventie" FromRole="Pret" ToRole="Interventie" />
+        </EntityType>
+        <EntityType Name="Programare">
+          <Key>
+            <PropertyRef Name="idProgramare" />
+          </Key>
+          <Property Name="idProgramare" Type="Int32" Nullable="false" />
+          <Property Name="idPacient" Type="Int32" Nullable="false" />
+          <Property Name="dataProgramare" Type="DateTime" Precision="3" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Pacient" Relationship="Self.FK_Programare_Pacient" FromRole="Programare" ToRole="Pacient" />
+          <NavigationProperty Name="ProgramInter" Relationship="CabinetModel.ProgramInterProgramare" FromRole="Programare" ToRole="ProgramInter" />
+          <Property Name="ProgramInter_idProgramare" Nullable="false" Type="Int32" />
+          <Property Name="ProgramInter_idInterventie" Nullable="false" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Utilizator">
+          <Key>
+            <PropertyRef Name="idUtilizator" />
+          </Key>
+          <Property Name="idUtilizator" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nume" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="parola" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isMedic" Type="Boolean" Nullable="false" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Pacient" Relationship="Self.FK_Pacient_Utilizator" FromRole="Utilizator" ToRole="Pacient" />
+        </EntityType>
+        <EntityType Name="ProgramInter">
+          <Key>
+            <PropertyRef Name="idProgramare" />
+            <PropertyRef Name="idInterventie" />
+          </Key>
+          <Property Name="idProgramare" Type="Int32" Nullable="false" />
+          <Property Name="idInterventie" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Interventie" Relationship="Self.FK_ProgramInter_Interventie" FromRole="ProgramInter" ToRole="Interventie" />
+          <NavigationProperty Name="Programare" Relationship="CabinetModel.ProgramInterProgramare" FromRole="ProgramInter" ToRole="Programare" />
+        </EntityType>
+        <Association Name="FK_Pret_Interventie">
+          <End Role="Interventie" Type="Self.Interventie" Multiplicity="1" />
+          <End Role="Pret" Type="Self.Pret" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Interventie">
+              <PropertyRef Name="idInterventie" />
+            </Principal>
+            <Dependent Role="Pret">
+              <PropertyRef Name="idInterventie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgramInter_Interventie">
+          <End Role="Interventie" Type="Self.Interventie" Multiplicity="1" />
+          <End Role="ProgramInter" Type="Self.ProgramInter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Interventie">
+              <PropertyRef Name="idInterventie" />
+            </Principal>
+            <Dependent Role="ProgramInter">
+              <PropertyRef Name="idInterventie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pacient_Utilizator">
+          <End Role="Utilizator" Type="Self.Utilizator" Multiplicity="1" />
+          <End Role="Pacient" Type="Self.Pacient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Utilizator">
+              <PropertyRef Name="idUtilizator" />
+            </Principal>
+            <Dependent Role="Pacient">
+              <PropertyRef Name="idUtilizator" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Programare_Pacient">
+          <End Role="Pacient" Type="Self.Pacient" Multiplicity="1" />
+          <End Role="Programare" Type="Self.Programare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pacient">
+              <PropertyRef Name="idPacient" />
+            </Principal>
+            <Dependent Role="Programare">
+              <PropertyRef Name="idPacient" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CabinetEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Interventie" EntityType="Self.Interventie" />
+          <EntitySet Name="Pacient" EntityType="Self.Pacient" />
+          <EntitySet Name="Pret" EntityType="Self.Pret" />
+          <EntitySet Name="Programare" EntityType="Self.Programare" />
+          <EntitySet Name="Utilizator" EntityType="Self.Utilizator" />
+          <EntitySet Name="ProgramInter" EntityType="Self.ProgramInter" />
+          <AssociationSet Name="FK_Pret_Interventie" Association="Self.FK_Pret_Interventie">
+            <End Role="Interventie" EntitySet="Interventie" />
+            <End Role="Pret" EntitySet="Pret" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgramInter_Interventie" Association="Self.FK_ProgramInter_Interventie">
+            <End Role="Interventie" EntitySet="Interventie" />
+            <End Role="ProgramInter" EntitySet="ProgramInter" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pacient_Utilizator" Association="Self.FK_Pacient_Utilizator">
+            <End Role="Utilizator" EntitySet="Utilizator" />
+            <End Role="Pacient" EntitySet="Pacient" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Programare_Pacient" Association="Self.FK_Programare_Pacient">
+            <End Role="Pacient" EntitySet="Pacient" />
+            <End Role="Programare" EntitySet="Programare" />
+          </AssociationSet>
+          <FunctionImport Name="DeleteInterventie">
+            <Parameter Name="idInterventie" Mode="In" Type="Int32" />
+            <Parameter Name="isDeleted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="DeletePacient">
+            <Parameter Name="idPacient" Mode="In" Type="Int32" />
+            <Parameter Name="idDeleted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="DeletePret">
+            <Parameter Name="idPret" Mode="In" Type="Int32" />
+            <Parameter Name="isDeleted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteProgramare">
+            <Parameter Name="idProgramare" Mode="In" Type="Int32" />
+            <Parameter Name="idPacient" Mode="In" Type="Int32" />
+            <Parameter Name="isDeleted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteUser">
+          <Parameter Name="idUtilizator" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetAllInterventii" ReturnType="Collection(CabinetModel.GetAllInterventii_Result)" />
+          <FunctionImport Name="GetAllPacienti" ReturnType="Collection(CabinetModel.GetAllPacienti_Result)">
+          <Parameter Name="idUtilizator" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetAllPret" ReturnType="Collection(CabinetModel.GetAllPret_Result)" />
+          <FunctionImport Name="GetAllProgramari" ReturnType="Collection(CabinetModel.GetAllProgramari_Result)" />
+          <FunctionImport Name="GetAllUsers" ReturnType="Collection(CabinetModel.GetAllUsers_Result)" />
+          <FunctionImport Name="InsertInterventie">
+          <Parameter Name="tip" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertPacient">
+            <Parameter Name="idUtilizator" Mode="In" Type="Int32" />
+            <Parameter Name="nume" Mode="In" Type="String" />
+            <Parameter Name="prenume" Mode="In" Type="String" />
+            <Parameter Name="cnp" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertPret">
+            <Parameter Name="idInterventie" Mode="In" Type="Int32" />
+            <Parameter Name="dataInceput" Mode="In" Type="DateTime" />
+            <Parameter Name="dataSfarsit" Mode="In" Type="DateTime" />
+            <Parameter Name="pret" Mode="In" Type="Double" />
+          </FunctionImport>
+          <FunctionImport Name="InsertProgramare">
+            <Parameter Name="idPacient" Mode="In" Type="Int32" />
+            <Parameter Name="dataProgramare" Mode="In" Type="DateTime" />
+            <Parameter Name="isDeleted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="InsertUser">
+            <Parameter Name="nume" Mode="In" Type="String" />
+            <Parameter Name="parola" Mode="In" Type="String" />
+            <Parameter Name="isMedic" Mode="In" Type="Boolean" />
+            <Parameter Name="isDeleted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateInterventie">
+            <Parameter Name="idInterventie" Mode="In" Type="Int32" />
+            <Parameter Name="tip" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="UpdatePacient">
+            <Parameter Name="idPacient" Mode="In" Type="Int32" />
+            <Parameter Name="nume" Mode="In" Type="String" />
+            <Parameter Name="prenume" Mode="In" Type="String" />
+            <Parameter Name="cnp" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="UpdatePret">
+            <Parameter Name="idPret" Mode="In" Type="Int32" />
+            <Parameter Name="idInterventie" Mode="In" Type="Int32" />
+            <Parameter Name="dataInceput" Mode="In" Type="DateTime" />
+            <Parameter Name="dataSfarsit" Mode="In" Type="DateTime" />
+            <Parameter Name="pret" Mode="In" Type="Double" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateProgramare">
+            <Parameter Name="idProgramare" Mode="In" Type="Int32" />
+            <Parameter Name="idPacient" Mode="In" Type="Int32" />
+            <Parameter Name="dataProgramare" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateUser">
+            <Parameter Name="idUtilizator" Mode="In" Type="Int32" />
+            <Parameter Name="nume" Mode="In" Type="String" />
+            <Parameter Name="parola" Mode="In" Type="String" />
+            <Parameter Name="isMedic" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <AssociationSet Name="ProgramInterProgramare" Association="CabinetModel.ProgramInterProgramare">
+            <End Role="ProgramInter" EntitySet="ProgramInter" />
+            <End Role="Programare" EntitySet="Programare" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="GetAllInterventii_Result">
+          <Property Type="Int32" Name="idInterventie" Nullable="false" />
+          <Property Type="String" Name="tip" Nullable="true" MaxLength="50" />
+          <Property Type="Boolean" Name="isDeleted" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="GetAllPacienti_Result">
+          <Property Type="Int32" Name="idPacient" Nullable="false" />
+          <Property Type="Int32" Name="idUtilizator" Nullable="false" />
+          <Property Type="String" Name="nume" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="prenume" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="cnp" Nullable="true" MaxLength="50" />
+          <Property Type="Boolean" Name="isDeleted" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="GetAllPret_Result">
+          <Property Type="Int32" Name="idPret" Nullable="false" />
+          <Property Type="Int32" Name="idInterventie" Nullable="false" />
+          <Property Type="DateTime" Name="dataInceput" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="dataSfarsit" Nullable="true" Precision="23" />
+          <Property Type="Double" Name="pret" Nullable="true" />
+          <Property Type="Boolean" Name="isDeleted" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="GetAllProgramari_Result">
+          <Property Type="Int32" Name="idProgramare" Nullable="false" />
+          <Property Type="Int32" Name="idPacient" Nullable="false" />
+          <Property Type="DateTime" Name="dataProgramare" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="isDeleted" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="GetAllUsers_Result">
+          <Property Type="Int32" Name="idUtilizator" Nullable="false" />
+          <Property Type="String" Name="nume" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="parola" Nullable="true" MaxLength="50" />
+          <Property Type="Boolean" Name="isMedic" Nullable="false" />
+          <Property Type="Boolean" Name="isDeleted" Nullable="false" />
+        </ComplexType>
+        <Association Name="ProgramInterProgramare">
+          <End Type="CabinetModel.ProgramInter" Role="ProgramInter" Multiplicity="1" />
+          <End Type="CabinetModel.Programare" Role="Programare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProgramInter">
+              <PropertyRef Name="idProgramare" />
+              <PropertyRef Name="idInterventie" />
+            </Principal>
+            <Dependent Role="Programare">
+              <PropertyRef Name="ProgramInter_idProgramare" />
+              <PropertyRef Name="ProgramInter_idInterventie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CabinetModelStoreContainer" CdmEntityContainer="CabinetEntities">
+          <EntitySetMapping Name="Interventie">
+            <EntityTypeMapping TypeName="CabinetModel.Interventie">
+              <MappingFragment StoreEntitySet="Interventie">
+                <ScalarProperty Name="idInterventie" ColumnName="idInterventie" />
+                <ScalarProperty Name="tip" ColumnName="tip" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pacient">
+            <EntityTypeMapping TypeName="CabinetModel.Pacient">
+              <MappingFragment StoreEntitySet="Pacient">
+                <ScalarProperty Name="idPacient" ColumnName="idPacient" />
+                <ScalarProperty Name="idUtilizator" ColumnName="idUtilizator" />
+                <ScalarProperty Name="nume" ColumnName="nume" />
+                <ScalarProperty Name="prenume" ColumnName="prenume" />
+                <ScalarProperty Name="cnp" ColumnName="cnp" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pret">
+            <EntityTypeMapping TypeName="CabinetModel.Pret">
+              <MappingFragment StoreEntitySet="Pret">
+                <ScalarProperty Name="idPret" ColumnName="idPret" />
+                <ScalarProperty Name="idInterventie" ColumnName="idInterventie" />
+                <ScalarProperty Name="dataInceput" ColumnName="dataInceput" />
+                <ScalarProperty Name="dataSfarsit" ColumnName="dataSfarsit" />
+                <ScalarProperty Name="pret1" ColumnName="pret" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Programare">
+            <EntityTypeMapping TypeName="CabinetModel.Programare">
+              <MappingFragment StoreEntitySet="Programare">
+                <ScalarProperty Name="idProgramare" ColumnName="idProgramare" />
+                <ScalarProperty Name="idPacient" ColumnName="idPacient" />
+                <ScalarProperty Name="dataProgramare" ColumnName="dataProgramare" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Utilizator">
+            <EntityTypeMapping TypeName="CabinetModel.Utilizator">
+              <MappingFragment StoreEntitySet="Utilizator">
+                <ScalarProperty Name="idUtilizator" ColumnName="idUtilizator" />
+                <ScalarProperty Name="nume" ColumnName="nume" />
+                <ScalarProperty Name="parola" ColumnName="parola" />
+                <ScalarProperty Name="isMedic" ColumnName="isMedic" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProgramInter">
+            <EntityTypeMapping TypeName="CabinetModel.ProgramInter">
+              <MappingFragment StoreEntitySet="ProgramInter">
+                <ScalarProperty Name="idProgramare" ColumnName="idProgramare" />
+                <ScalarProperty Name="idInterventie" ColumnName="idInterventie" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="DeleteInterventie" FunctionName="CabinetModel.Store.DeleteInterventie" />
+          <FunctionImportMapping FunctionImportName="DeletePacient" FunctionName="CabinetModel.Store.DeletePacient" />
+          <FunctionImportMapping FunctionImportName="DeletePret" FunctionName="CabinetModel.Store.DeletePret" />
+          <FunctionImportMapping FunctionImportName="DeleteProgramare" FunctionName="CabinetModel.Store.DeleteProgramare" />
+          <FunctionImportMapping FunctionImportName="DeleteUser" FunctionName="CabinetModel.Store.DeleteUser" />
+          <FunctionImportMapping FunctionImportName="GetAllInterventii" FunctionName="CabinetModel.Store.GetAllInterventii">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CabinetModel.GetAllInterventii_Result">
+                <ScalarProperty Name="idInterventie" ColumnName="idInterventie" />
+                <ScalarProperty Name="tip" ColumnName="tip" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetAllPacienti" FunctionName="CabinetModel.Store.GetAllPacienti">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CabinetModel.GetAllPacienti_Result">
+                <ScalarProperty Name="idPacient" ColumnName="idPacient" />
+                <ScalarProperty Name="idUtilizator" ColumnName="idUtilizator" />
+                <ScalarProperty Name="nume" ColumnName="nume" />
+                <ScalarProperty Name="prenume" ColumnName="prenume" />
+                <ScalarProperty Name="cnp" ColumnName="cnp" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetAllPret" FunctionName="CabinetModel.Store.GetAllPret">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CabinetModel.GetAllPret_Result">
+                <ScalarProperty Name="idPret" ColumnName="idPret" />
+                <ScalarProperty Name="idInterventie" ColumnName="idInterventie" />
+                <ScalarProperty Name="dataInceput" ColumnName="dataInceput" />
+                <ScalarProperty Name="dataSfarsit" ColumnName="dataSfarsit" />
+                <ScalarProperty Name="pret" ColumnName="pret" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetAllProgramari" FunctionName="CabinetModel.Store.GetAllProgramari">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CabinetModel.GetAllProgramari_Result">
+                <ScalarProperty Name="idProgramare" ColumnName="idProgramare" />
+                <ScalarProperty Name="idPacient" ColumnName="idPacient" />
+                <ScalarProperty Name="dataProgramare" ColumnName="dataProgramare" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetAllUsers" FunctionName="CabinetModel.Store.GetAllUsers">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CabinetModel.GetAllUsers_Result">
+                <ScalarProperty Name="idUtilizator" ColumnName="idUtilizator" />
+                <ScalarProperty Name="nume" ColumnName="nume" />
+                <ScalarProperty Name="parola" ColumnName="parola" />
+                <ScalarProperty Name="isMedic" ColumnName="isMedic" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="InsertInterventie" FunctionName="CabinetModel.Store.InsertInterventie" />
+          <FunctionImportMapping FunctionImportName="InsertPacient" FunctionName="CabinetModel.Store.InsertPacient" />
+          <FunctionImportMapping FunctionImportName="InsertPret" FunctionName="CabinetModel.Store.InsertPret" />
+          <FunctionImportMapping FunctionImportName="InsertProgramare" FunctionName="CabinetModel.Store.InsertProgramare" />
+          <FunctionImportMapping FunctionImportName="InsertUser" FunctionName="CabinetModel.Store.InsertUser" />
+          <FunctionImportMapping FunctionImportName="UpdateInterventie" FunctionName="CabinetModel.Store.UpdateInterventie" />
+          <FunctionImportMapping FunctionImportName="UpdatePacient" FunctionName="CabinetModel.Store.UpdatePacient" />
+          <FunctionImportMapping FunctionImportName="UpdatePret" FunctionName="CabinetModel.Store.UpdatePret" />
+          <FunctionImportMapping FunctionImportName="UpdateProgramare" FunctionName="CabinetModel.Store.UpdateProgramare" />
+          <FunctionImportMapping FunctionImportName="UpdateUser" FunctionName="CabinetModel.Store.UpdateUser" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
